@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --inspect",
+    "deploy-vercel": "pnpm dlx vercel",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
