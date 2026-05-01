@@ -1,9 +1,12 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
+import {
+  createSupabaseAdminClient,
+  createSupabaseServerClient,
+} from "@/lib/supabase/server";
 
 import type { Message } from "./types";
 
 export async function getMessages() {
-  const supabase = await createSupabaseServerClient();
+  const supabase = createSupabaseAdminClient();
 
   const { data, error } = await supabase
     .from("messages")
@@ -17,4 +20,15 @@ export async function getMessages() {
   }
 
   return data as Message[];
+}
+
+export async function getAuthorizedUserEmail() {
+  const supabase = await createSupabaseServerClient();
+  const { data, error } = await supabase.auth.getUser();
+
+  if (error) {
+    return null;
+  }
+
+  return data.user?.email ?? null;
 }

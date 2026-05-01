@@ -1,4 +1,5 @@
 import { createServerClient } from "@supabase/ssr";
+import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
 
 export async function createSupabaseServerClient() {
@@ -11,7 +12,7 @@ export async function createSupabaseServerClient() {
 
   const cookieStore = await cookies();
 
-  return createServerClient(supabaseUrl, supabaseSecretKey, {
+  const api = createServerClient(supabaseUrl, supabaseSecretKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
@@ -26,6 +27,23 @@ export async function createSupabaseServerClient() {
           // before streaming starts. Middleware should handle session refreshes.
         }
       },
+    },
+  });
+  return api;
+}
+
+export function createSupabaseAdminClient() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const supabaseSecretKey = process.env.SB_SECRET;
+
+  if (!supabaseUrl || !supabaseSecretKey) {
+    throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SB_SECRET");
+  }
+
+  return createClient(supabaseUrl, supabaseSecretKey, {
+    auth: {
+      persistSession: false,
+      autoRefreshToken: false,
     },
   });
 }
