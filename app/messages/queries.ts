@@ -2,6 +2,7 @@ import {
   createSupabaseAdminClient,
   createSupabaseServerClient,
 } from "@/lib/supabase/server";
+import { redirect } from "next/navigation";
 
 import type { Message } from "./types";
 
@@ -26,9 +27,9 @@ export async function getAuthorizedUserEmail() {
   const supabase = await createSupabaseServerClient();
   const { data, error } = await supabase.auth.getUser();
 
-  if (error) {
-    return null;
+  if (error || !data.user?.email) {
+    redirect("/login");
   }
 
-  return data.user?.email ?? null;
+  return data.user.email;
 }
