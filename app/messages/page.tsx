@@ -1,61 +1,7 @@
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-
-type Message = {
-  id: string;
-  chat_id: number;
-  user_id: number;
-  username: string | null;
-  first_name: string | null;
-  last_name: string | null;
-  text: string;
-  created_at: string | null;
-};
+import { getMessages } from "./queries";
+import { formatDate, getDisplayName } from "./utils";
 
 export const dynamic = "force-dynamic";
-
-function getDisplayName(message: Message) {
-  const fullName = [message.first_name, message.last_name]
-    .filter(Boolean)
-    .join(" ");
-
-  if (fullName) {
-    return fullName;
-  }
-
-  if (message.username) {
-    return `@${message.username}`;
-  }
-
-  return `User ${message.user_id}`;
-}
-
-function formatDate(value: string | null) {
-  if (!value) {
-    return "Unknown date";
-  }
-
-  return new Intl.DateTimeFormat("en", {
-    dateStyle: "medium",
-    timeStyle: "short",
-  }).format(new Date(value));
-}
-
-async function getMessages() {
-  const supabase = createSupabaseServerClient();
-
-  const { data, error } = await supabase
-    .from("messages")
-    .select(
-      "id, chat_id, user_id, username, first_name, last_name, text, created_at",
-    )
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    throw new Error(error.message);
-  }
-
-  return data as Message[];
-}
 
 export default async function MessagesPage() {
   const messages = await getMessages();
