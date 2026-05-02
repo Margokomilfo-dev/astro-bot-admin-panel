@@ -1,4 +1,5 @@
 # Неделя 3 — Telegram Bot и авторизация в Next.js
+https://astro-bot-admin-panel.vercel.app
 
 К концу недели должно быть готово:
 

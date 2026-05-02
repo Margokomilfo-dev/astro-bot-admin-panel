@@ -1,4 +1,5 @@
 # Lesson 2: Messages Architecture
+https://astro-bot-admin-panel.vercel.app
 
 ## Current structure
 
