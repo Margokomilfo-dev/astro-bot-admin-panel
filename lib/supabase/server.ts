@@ -1,6 +1,7 @@
 import { createServerClient } from "@supabase/ssr";
 import { createClient } from "@supabase/supabase-js";
 import { cookies } from "next/headers";
+import type { Database } from "./database.types";
 
 export async function createSupabaseServerClient() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -12,7 +13,7 @@ export async function createSupabaseServerClient() {
 
   const cookieStore = await cookies();
 
-  const api = createServerClient(supabaseUrl, supabaseSecretKey, {
+  const api = createServerClient<Database>(supabaseUrl, supabaseSecretKey, {
     cookies: {
       getAll() {
         return cookieStore.getAll();
@@ -40,7 +41,7 @@ export function createSupabaseAdminClient() {
     throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL or SB_SECRET");
   }
 
-  return createClient(supabaseUrl, supabaseSecretKey, {
+  return createClient<Database>(supabaseUrl, supabaseSecretKey, {
     auth: {
       persistSession: false,
       autoRefreshToken: false,

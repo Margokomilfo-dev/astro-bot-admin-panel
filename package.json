@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --inspect",
     "deploy-vercel": "pnpm dlx vercel",
+    "supabase:types": "supabase gen types typescript --linked --schema public > lib/supabase/database.types.ts",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"

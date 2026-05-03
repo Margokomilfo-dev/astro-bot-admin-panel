@@ -1,17 +1,23 @@
 import { logoutAction } from "./actions";
 
 type HeaderProps = {
-  email: string;
+  managerName: string;
+  managerPosition: string;
 };
 
-export function Header({ email }: HeaderProps) {
+export function Header({ managerName, managerPosition }: HeaderProps) {
   return (
     <header className="mb-8 flex flex-col gap-4 border-b border-slate-200 pb-5 sm:flex-row sm:items-center sm:justify-between">
       <h1 className="text-3xl font-bold tracking-tight">
         Astro-Bot — Сообщения
       </h1>
       <div className="flex items-center gap-3">
-        <p className="text-sm font-medium text-slate-600">{email}</p>
+        <div className="text-right">
+          <p className="text-sm font-semibold text-slate-800">{managerName}</p>
+          <p className="mt-0.5 text-xs font-medium text-slate-500">
+            {managerPosition}
+          </p>
+        </div>
         <form action={logoutAction}>
           <button
             type="submit"

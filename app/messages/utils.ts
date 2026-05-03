@@ -1,7 +1,13 @@
-import type { Message } from "./types";
+type DisplayableClient = {
+  first_name: string | null;
+  last_name: string | null;
+  username: string | null;
+  user_id?: number;
+  telegram_user_id?: number;
+};
 
-export function getDisplayName(message: Message) {
-  const fullName = [message.first_name, message.last_name]
+export function getDisplayName(person: DisplayableClient) {
+  const fullName = [person.first_name, person.last_name]
     .filter(Boolean)
     .join(" ");
 
@@ -9,11 +15,22 @@ export function getDisplayName(message: Message) {
     return fullName;
   }
 
-  if (message.username) {
-    return `@${message.username}`;
+  if (person.username) {
+    return `@${person.username}`;
   }
 
-  return `User ${message.user_id}`;
+  return `User ${person.user_id ?? person.telegram_user_id}`;
+}
+
+export function getInitials(person: DisplayableClient) {
+  const firstInitial = person.first_name?.trim().charAt(0);
+  const lastInitial = person.last_name?.trim().charAt(0);
+
+  if (firstInitial || lastInitial) {
+    return `${firstInitial ?? ""}${lastInitial ?? ""}`.toUpperCase();
+  }
+
+  return getDisplayName(person).slice(0, 2).toUpperCase();
 }
 
 export function formatDate(value: string | null) {
@@ -25,4 +42,35 @@ export function formatDate(value: string | null) {
     dateStyle: "medium",
     timeStyle: "short",
   }).format(new Date(value));
+}
+
+export function formatMessageDay(value: string | null) {
+  if (!value) {
+    return "Unknown date";
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  }).format(new Date(value));
+}
+
+export function formatMessageTime(value: string | null) {
+  if (!value) {
+    return "";
+  }
+
+  return new Intl.DateTimeFormat("en", {
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(value));
+}
+
+export function getMessageDayKey(value: string | null) {
+  if (!value) {
+    return "unknown";
+  }
+
+  return new Date(value).toISOString().slice(0, 10);
 }
